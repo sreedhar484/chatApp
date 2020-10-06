@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Icon/Status/Pledged</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Admin-Web-8" transform="translate(-1256.000000, -418.000000)" fill-rule="nonzero">
+            <g id="Icon/Status/Pledged" transform="translate(1256.000000, 418.000000)">
+                <path d="M8,0 C3.576,0 0,3.576 0,8 C0,12.424 3.576,16 8,16 C12.424,16 16,12.424 16,8 C16,3.576 12.424,0 8,0 Z" id="Shape" fill="#ED8F05"></path>
+                <path d="M7.5,3 L7.5,9" id="Line-5" stroke="#FFFFFF" stroke-linecap="round"></path>
+                <path d="M7.5,9.5925867 L12.5,9.5925867" id="Line-5" stroke="#FFFFFF" stroke-linecap="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>
