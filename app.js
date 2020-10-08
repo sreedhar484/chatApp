@@ -11,7 +11,8 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const PORT = process.env.PORT || 1234;
-const MONGO_URL = process.env.MONGO_URI || "mongodb://localhost:27017/User";
+const MONGO_URL =
+  "mongodb+srv://sreedhar:sree1431@cluster0.qqiot.mongodb.net/User?retryWrites=true&w=majority";
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./uploads/");
@@ -23,11 +24,13 @@ var storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 app.use(bodyParser.json());
 app.use(cors());
-mongoose.connect(MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
+mongoose
+  .connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
+  .then(() => console.log("connected"));
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -189,3 +192,4 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 server.listen(PORT);
+console.log("listing on port", PORT);
