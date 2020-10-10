@@ -14,7 +14,6 @@ import Register from "./Register";
 // import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NewGroup from "./NewGroup";
-import VideoCall from "./VideoCall";
 function Main() {
   return (
     <Box>
@@ -36,9 +35,6 @@ function Main() {
             </Route>
             <Route exact path="/main/id">
               <ContactDetails />
-            </Route>
-            <Route exact path="/main/id/video">
-              <VideoCall/>
             </Route>
             <Route exact path="/newgroup">
               <NewGroup/>
