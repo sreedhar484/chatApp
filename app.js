@@ -10,7 +10,7 @@ const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 1234;
 const MONGO_URL =
   "mongodb+srv://sreedhar:sree1431@cluster0.qqiot.mongodb.net/User?retryWrites=true&w=majority";
 var storage = multer.diskStorage({
