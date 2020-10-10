@@ -50,7 +50,7 @@ function Header() {
               h="30px"
               border="1px solid white"
               borderRadius="50%"
-              src={`http://localhost:1234/${Cookie.get("userImage")}`}
+              src={`/${Cookie.get("userImage")}`}
               onClick={onOpen}
             />
             <Text color="white" ml={["20px", "20px", "35px", "50px"]}>
@@ -84,7 +84,7 @@ function Header() {
                 borderRadius="50%"
                 w="50px"
                 h="50px"
-                src={`http://localhost:1234/${Cookie.get("userImage")}`}
+                src={`/${Cookie.get("userImage")}`}
                 mb={2}
               />
               <Text color="white">{Cookie.get("userName")}</Text>
@@ -105,28 +105,12 @@ function Header() {
                   New Group
                 </Button>
                 <Button variant="unstyled" d="flex" justifyContent="flex-start">
-                  <BsLock />
-                  New Secret Chat
-                </Button>
-                <Button variant="unstyled" d="flex" justifyContent="flex-start">
                   <AiOutlineNotification />
                   New Channel
                 </Button>
                 <Button variant="unstyled" d="flex" justifyContent="flex-start">
-                  <BsPerson />
-                  Contacts
-                </Button>
-                <Button variant="unstyled" d="flex" justifyContent="flex-start">
                   <HiOutlinePhone />
                   Calls
-                </Button>
-                <Button variant="unstyled" d="flex" justifyContent="flex-start">
-                  <BsBookmark />
-                  Saved Messages
-                </Button>
-                <Button variant="unstyled" d="flex" justifyContent="flex-start">
-                  <BsGear />
-                  Settings
                 </Button>
                 <Divider />
                 <Button variant="unstyled" d="flex" justifyContent="flex-start">

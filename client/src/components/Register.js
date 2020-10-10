@@ -50,7 +50,7 @@ export class Register extends Component {
           formData.append("type", "user");
           formData.append("userImage", this.state.file);
           console.log(formData)
-          Axios.post("http://localhost:1234/register",formData)
+          Axios.post("/register",formData)
             .then((res) => {
               console.log(res.data);
               if (res.data === "Password doesn't match") {

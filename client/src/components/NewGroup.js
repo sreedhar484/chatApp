@@ -15,7 +15,7 @@ function NewGroup() {
     console.log(group)
     useEffect(() => {
       setgroup([...group, Cookie.get("userName")]);
-      Axios.get("http://localhost:1234/user")
+      Axios.get("/user")
         .then((res) => {
           let data = res.data;
           data = data.filter((data) => data.userName !== Cookie.get("userName"));
@@ -54,7 +54,7 @@ function NewGroup() {
       formData.append("users", group);
       formData.append("type", "group");
       formData.append("userImage", groupImage);
-        Axios.post("http://localhost:1234/register",formData).then(res=>{console.log(res);history.push("/main")});
+        Axios.post("/register",formData).then(res=>{console.log(res);history.push("/main")});
     }
     return (
       <Box>
@@ -116,7 +116,7 @@ function NewGroup() {
                 borderRadius="50%"
                 w="50px"
                 h="50px"
-                src={`http://localhost:1234/${data.userImage}`}
+                src={`/${data.userImage}`}
               />
               <Box ml={4}>
                 <Text fontWeight="bold">{data.userName}</Text>

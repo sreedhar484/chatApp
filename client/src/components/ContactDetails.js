@@ -14,7 +14,6 @@ import {
   Button,
   Input,
   PseudoBox,
-  Flex,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -23,6 +22,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  Icon,
 } from "@chakra-ui/core";
 import { HiOutlinePhone } from "react-icons/hi";
 import {
@@ -33,6 +33,7 @@ import {
   PopoverArrow,
 } from "@chakra-ui/core";
 import io from "socket.io-client";
+import LongPress from "./Longpress";
 import { useHistory } from "react-router-dom";
 import Cookie from "js-cookie";
 import "../App.css";
@@ -47,8 +48,13 @@ function ContactDetails(props) {
   const [socket, setSocket] = useState(null);
   const [editMessage, setEditMessage] = useState("");
   const [groupInfo, setGroupInfo] = useState([]);
+  const [edit, setEdit] = useState(-1);
+  const open = (idx) => {
+    setEdit(idx);
+  };
+  const close = () => setEdit(-1);
   useEffect(() => {
-    setSocket(io("http://localhost:1234"));
+    setSocket(io("/"));
   }, []);
   useEffect(() => {
     if (socket !== null) {
@@ -73,7 +79,7 @@ function ContactDetails(props) {
         }
       });
     } else {
-      Axios.get("http://localhost:1234/user/chat")
+      Axios.get("/user/chat")
         .then((res) => {
           if (userClick.type === "user") {
             let data = res.data;
@@ -95,7 +101,7 @@ function ContactDetails(props) {
           }
         })
         .catch((err) => console.log(err));
-      Axios.get("http://localhost:1234/user")
+      Axios.get("/user")
         .then((res) => {
           let data1 = res.data.filter(
             (data) =>
@@ -111,7 +117,7 @@ function ContactDetails(props) {
     console.log(files);
     const formData = new FormData();
     formData.append("file", files[0]);
-    Axios.post("http://localhost:1234/user/uploadfiles", formData).then(
+    Axios.post("/user/uploadfiles", formData).then(
       (res) => {
         console.log(res.data);
         socket.emit("Input Chat Message", {
@@ -132,11 +138,13 @@ function ContactDetails(props) {
       message: editMessage,
     });
     setEditMessage("");
+    setEdit(-1);
   };
   const deleteMsg = (id) => {
     socket.emit("delete chat message", {
       id: id,
     });
+    setEdit(-1);
   };
   // const deleteMsgOne = (data1) => {
   //   let data = Cookie.get("userName") === data1.sender?"sender":"reciever"
@@ -185,7 +193,7 @@ function ContactDetails(props) {
                 borderRadius="50%"
                 w="40px"
                 h="40px"
-                src={`http://localhost:1234/${userClick.userImage}`}
+                src={`/${userClick.userImage}`}
               />
               <Box ml={4}>
                 <Text fontWeight="bold" color="white">
@@ -219,6 +227,7 @@ function ContactDetails(props) {
                       variant="unstyled"
                       d="flex"
                       justifyContent="flex-start"
+                      onClick={()=>history.push("id/video")}
                     >
                       <BsCameraVideo />
                       Video Call
@@ -236,23 +245,8 @@ function ContactDetails(props) {
                       d="flex"
                       justifyContent="flex-start"
                     >
-                      Clear Chat
-                    </Button>
-                    <Button
-                      variant="unstyled"
-                      d="flex"
-                      justifyContent="flex-start"
-                    >
                       <AiOutlineDelete />
                       Delete Chat
-                    </Button>
-                    <Button
-                      variant="unstyled"
-                      d="flex"
-                      justifyContent="flex-start"
-                    >
-                      <BsVolumeMute />
-                      Mute Notificatoions
                     </Button>
                   </Box>
                 </PopoverBody>
@@ -270,119 +264,160 @@ function ContactDetails(props) {
         mb={["50px", "50px", "60px", "70px"]}
       >
         {arr.map((data, idx) => (
-          <Box
-            d="flex"
+          <LongPress
             key={idx}
-            h="auto"
-            w="80%"
-            mx="5px"
-            overflowWrap="break-word"
-            backgroundColor="teal.300"
-            float={data.sender === Cookie.get("userName") ? "right" : "left"}
-            justifyContent={
-              data.sender === Cookie.get("userName")
-                ? "flex-end"
-                : "space-between"
+            time={500}
+            onLongPress={
+              data.sender === Cookie.get("userName") ? () => open(idx) : ""
             }
-            mb="10px"
           >
-            {data.type === "text" ? (
-              <Text mr={2}>{data.message}</Text>
-            ) : (
-              <Text>
-                {data.message.split(".").pop() === "jpg" ||
-                data.message.split(".").pop() === "jpeg" ||
-                data.message.split(".").pop() === "png" ? (
-                  <Image
-                    width="100%"
-                    alt="img"
-                    src={`http://localhost:1234/${data.message}`}
-                  />
-                ) : data.message.split(".").pop() === "mp4" ||
-                  data.message.split(".").pop() === "mkv" ||
-                  data.message.split(".").pop() === "web" ? (
-                  <video
-                    style={{ width: "100%", height: "200px" }}
-                    src={`http://localhost:1234/${data.message}`}
-                    alt="video"
-                    type="video/mp4"
-                    controls
-                  />
-                ) : data.message.split(".").pop() === "mp3" ||
-                  data.message.split(".").pop() === "mpeg" ||
-                  data.message.split(".").pop() === "ogg" ? (
-                  <video
-                    style={{ width: "100%" }}
-                    src={`http://localhost:1234/${data.message}`}
-                    type="audio/mpeg"
-                    controls
-                  />
-                ) : (
-                  <a href={`http://localhost:1234/${data.message}`}>download</a>
-                )}
-              </Text>
-            )}
-            <Text
-              mr={2}
-              d={
-                data.sender !== Cookie.get("userName") &&
-                userClick.type !== "user"
-                  ? "flex"
-                  : "none"
+            <Box
+              d="flex"
+              h="auto"
+              w="80%"
+              minH="40px"
+              mx="5px"
+              flexDirection="column"
+              overflowWrap="break-word"
+              backgroundColor="teal.300"
+              border="1px solid teal.300"
+              borderRadius="10px"
+              float={data.sender === Cookie.get("userName") ? "right" : "left"}
+              justifyContent={
+                data.sender === Cookie.get("userName")
+                  ? "flex-end"
+                  : "space-between"
               }
+              mb="10px"
             >
-              {data.sender}
-            </Text>
-            {data.type === "text" ? (
-              <Popover placement="left-start" usePortal>
-                <PopoverTrigger>
-                  <Button>+</Button>
-                </PopoverTrigger>
-                <PopoverContent zIndex={4} w="200px">
-                  <PopoverArrow />
-                  <PopoverBody>
-                    <Box d="flex" flexDirection="column">
-                      <Flex>
-                        <Input
-                          variant="flushed"
-                          placeholder="enter msg"
-                          isRequired
-                          defaultValue={data.message}
-                          onChange={(e) => setEditMessage(e.target.value)}
-                        />
-                        <Button
-                          variant="unstyled"
-                          d="flex"
-                          justifyContent="flex-start"
-                          onClick={() => editMsg(data._id)}
-                        >
-                          edit
-                        </Button>
-                      </Flex>
-                      {/* <Button
-                      variant="unstyled"
-                      d="flex"
-                      justifyContent="flex-start"
-                      onClick={() => deleteMsgOne(data)}
-                    >
-                      delete
-                    </Button> */}
+              <Box>
+                {data.type === "text" ? (
+                  <Box>
+                    <Box d={edit === idx ? "none" : "flex"}>
+                      <Text p={1}>{data.message}</Text>
+                      <Button
+                        variant="unstyled"
+                        d={
+                          data.sender === Cookie.get("userName")
+                            ? ["none", "none", "none", "flex"]
+                            : "none"
+                        }
+                        onClick={() => open(idx)}
+                      >
+                        <Icon name="chevron-down" />
+                      </Button>
+                    </Box>
+                    <Box d={edit === idx ? "flex" : "none"}>
+                      <Input
+                        variant="flushed"
+                        backgroundColor="white"
+                        placeholder="enter msg"
+                        isRequired
+                        defaultValue={data.message}
+                        autoFocus
+                        onChange={(e) => setEditMessage(e.target.value)}
+                      />
+                      <Button
+                        variant="unstyled"
+                        d="flex"
+                        justifyContent="flex-start"
+                        onClick={() => editMsg(data._id)}
+                      >
+                        <Icon name="edit" />
+                      </Button>
                       <Button
                         variant="unstyled"
                         d="flex"
                         justifyContent="flex-start"
                         onClick={() => deleteMsg(data._id)}
                       >
-                        delete for everyone
+                        <Icon name="delete" />
+                      </Button>
+                      <Button
+                        variant="unstyled"
+                        d="flex"
+                        justifyContent="flex-start"
+                        onClick={close}
+                      >
+                        cancel
                       </Button>
                     </Box>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              ""
-            )}
-          </Box>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Box>
+                      <Text>
+                        {data.message.split(".").pop() === "jpg" ||
+                        data.message.split(".").pop() === "jpeg" ||
+                        data.message.split(".").pop() === "png" ? (
+                          <Image
+                            width="100%"
+                            alt="img"
+                            src={`/${data.message}`}
+                          />
+                        ) : data.message.split(".").pop() === "mp4" ||
+                          data.message.split(".").pop() === "mkv" ||
+                          data.message.split(".").pop() === "web" ? (
+                          <video
+                            style={{ width: "100%", height: "200px" }}
+                            src={`/${data.message}`}
+                            alt="video"
+                            type="video/mp4"
+                            controls
+                          />
+                        ) : data.message.split(".").pop() === "mp3" ||
+                          data.message.split(".").pop() === "mpeg" ||
+                          data.message.split(".").pop() === "ogg" ? (
+                          <video
+                            style={{ width: "100%" }}
+                            src={`/${data.message}`}
+                            type="audio/mpeg"
+                            controls
+                          />
+                        ) : (
+                          <a href={`/${data.message}`}>
+                            <Icon name="download" />{" "}
+                            {data.message.split("_").pop()}
+                          </a>
+                        )}
+                      </Text>
+                    </Box>
+                    <Box d={edit === idx ? "flex" : "none"}>
+                      <Button
+                        variant="unstyled"
+                        d="flex"
+                        justifyContent="flex-start"
+                        onClick={() => deleteMsg(data._id)}
+                      >
+                        <Icon name="delete" />
+                      </Button>
+                      <Button
+                        variant="unstyled"
+                        d="flex"
+                        justifyContent="flex-start"
+                        onClick={close}
+                      >
+                        cancel
+                      </Button>
+                    </Box>
+                  </Box>
+                )}
+                <Text
+                  mr={2}
+                  p={1}
+                  fontSize="12px"
+                  d={
+                    data.sender !== Cookie.get("userName") &&
+                    userClick.type !== "user"
+                      ? "flex"
+                      : "none"
+                  }
+                >
+                  {data.sender}
+                </Text>
+              </Box>
+            </Box>
+          </LongPress>
         ))}
       </Box>
       <div className="footer">
@@ -460,7 +495,7 @@ function ContactDetails(props) {
               h="100px"
               justifySelf="center"
               alignSelf="center"
-              src={`http://localhost:1234/${userClick.userImage}`}
+              src={`/${userClick.userImage}`}
               mb={2}
             />
             <Text color="white" justifySelf="center" alignSelf="center">
@@ -484,7 +519,7 @@ function ContactDetails(props) {
                     borderRadius="50%"
                     w="50px"
                     h="50px"
-                    src={`http://localhost:1234/${data.userImage}`}
+                    src={`/${data.userImage}`}
                   />
                   <Box ml={4}>
                     <Text fontWeight="bold">{data.userName}</Text>

@@ -34,7 +34,7 @@ export class Login extends Component {
     event.preventDefault();
     if (this.state.userName.length !== 0) {
       if (this.state.password.length !== 0) {
-        Axios.post("http://localhost:1234/login", {
+        Axios.post("/login", {
           userName: this.state.userName,
           password: this.state.password,
         })

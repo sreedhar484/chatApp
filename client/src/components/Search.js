@@ -9,7 +9,7 @@ function Search(props) {
   const [users, setusers] = useState([]);
   const [search1, setSearch] = useState([]);
   useEffect(() => {
-    Axios.get("http://localhost:1234/user")
+    Axios.get("/user")
       .then((res) => {
         let data = res.data;
         data = data.filter((data) => data._id !== Cookie.get("userId") && data.type==="user");
@@ -74,7 +74,7 @@ function Search(props) {
               borderRadius="50%"
               w="50px"
               h="50px"
-              src={`http://localhost:1234/${data.userImage}`}
+              src={`/${data.userImage}`}
             />
             <Box ml={4}>
               <Text fontWeight="bold">{data.userName}</Text>
